@@ -15,6 +15,23 @@
   </div>
 
 <script>
+  const speed = document.querySelector('.speed');
+  const bar = speed.querySelector('.speed-bar');
+  const video = document.querySelector('.flex');
+
+  function handleMove(e) {//e is the object of event with properties
+      const y = e.pageY - this.offsetTop; //since the speedbar is not entirely at the top, we need offset
+      const percent = y / this.offsetHeight;
+      const min = 0.4;
+      const max = 4;
+      const height = Math.round(percent * 100) + '%';
+      const playbackRate = percent * (max - min) + min;
+      bar.style.height = height;//changing the css height of the filled in speed-bar for color
+      bar.textContent = playbackRate.toFixed(2) + '×';// tofix(2) sets it to two decimal place value
+      video.playbackRate = playbackRate;
+  }
+  speed.addEventListener('mousemove', handleMove);//STEP1 is you need to add eventListener on speedbar
+
 </script>
 </body>
 </html>
