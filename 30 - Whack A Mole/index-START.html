@@ -33,10 +33,61 @@
   </div>
 
 <script>
+  //creayte three global variables: all holes, all moles and the Scoreboard on display
   const holes = document.querySelectorAll('.hole');
   const scoreBoard = document.querySelector('.score');
   const moles = document.querySelectorAll('.mole');
+  const lengthi = holes.length
+  let lastHole;
+  let timeup = false;
+  let score = 0;
+  
+  //create a function to generate random duration for which mole appears
+  function randomTime (min, max) {
+    return Math.floor(Math.random()*(max-min)+min)
+  }
+  
+  //select random hole from which a mole can peep and make sure last hole is not same as current hole
+  function randomHole(holes) {
+    const ind = Math.floor(Math.random() * lengthi)
+    const hole = holes[ind]
+    if (hole === lastHole) {
+      return randomHole(holes)
+    }
+    lastHole=hole
+    return hole
+  }
 
+//Add new class to the slected hole and remove it after selected duration
+function peep(){
+  const time = randomTime(200,1000);
+  const hole = randomHole(holes);
+  hole.classList.add('up')
+  setTimeout(()=>{
+    hole.classList.remove('up')
+    if(!timeup) peep();
+  }, time)
+}
+
+//To start, reset score to 0 and swith off the timeup
+function startGame(){
+  scoreBoard.textContent = 0;
+  timeup = false;
+  score = 0;
+  peep();
+  setTimeout(() => timeup = true, 10000)
+}
+
+//On clicking a mole, remove its class and add score
+function bonk (e) {
+  if (!e.isTrusted) return;
+  score++;
+  this.parentNode.classList.remove('up');
+  scoreBoard.textContent = score;
+}
+
+//adding eventlistener only on moles
+moles.forEach(mole => mole.addEventListener('click', bonk))
 </script>
 </body>
 </html>
